@@ -1,0 +1,34 @@
+html{
+    font-size: 62.5%;
+}
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: $m-size;
+    margin: 0;
+}
+
+button{
+    cursor: pointer;
+}
+
+button:disabled{
+    cursor: default;
+}
+
+.active{
+    font-weight: bold;
+}
+
+.pageTitle{
+    margin-left: 30%;
+}
+.errorMsg {
+    color: #FF0000;
+}
+
+@media screen and (max-width: 960px) {
+    .pageTitle{
+        font-size: 18px;
+    }
+}

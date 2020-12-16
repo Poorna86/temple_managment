@@ -1,0 +1,9 @@
+@import './base//settings';
+@import './base/base';
+@import './components/HomePage.scss';
+@import './components/NavBarPage.scss';
+@import './components/StartLogin.scss';
+
+body{
+    font-family: Helvetica, Arial, sans-serif;
+}
