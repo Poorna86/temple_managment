@@ -23,7 +23,9 @@ class StartLogin extends React.Component {
     }
 
     handleShowMerchant = () => {
+        console.log('before showMerchant: ', this.state.showMerchant)
         this.setState({showMerchant: true})
+        console.log('after showMerchant: ', this.state.showMerchant)
     }
     handleCloseMerchant = () => {
         this.setState ({showMerchant: false})
@@ -54,8 +56,12 @@ class StartLogin extends React.Component {
 
     handleSuccsfulLogin = () => {
         const loginStatus = true
-        console.log('loginstatus: ', loginStatus)
         this.props.merchantLogin(loginStatus)
+    }
+
+    handleSuccsfulSignUp = () => {
+        const signupStatus = true
+        this.props.merchantSignUp(signupStatus)
     }
 
     onMrchntSubmit = (e) => {
@@ -65,24 +71,24 @@ class StartLogin extends React.Component {
             this.setState(() => ({error: 'please enter Id and password!!' }));
         } else {
             this.setState(() => ({error: ''}))
-            // const loginmrchnt = {
-            //     merchantid: this.state.merchantid,
-            //     mrchpswd: this.state.mrchpswd
-            // }
+            const loginmrchnt = {
+                merchantid: this.state.merchantid,
+                mrchpswd: this.state.mrchpswd
+            }
             
-            // axios
-            // .post('http://localhost:3000/merch/login', loginmrchnt)
-            // .then((response) => {
-            //     this.setState({status: response.statusText})
-            //     if (response.status === 200) {
+            axios
+            .post('http://localhost:3000/merch/login', loginmrchnt)
+            .then((response) => {
+                this.setState({status: response.statusText})
+                if (response.status === 200) {
                        this.setState({loginstatus: true})
                        this.handleSuccsfulLogin()
-            //     }
-            // })
-            // .catch(err => {
-            //     this.setState({error: err.response.data.message})
-            //     console.error('error info: ', err.response.data.message);
-            // });
+                }
+            })
+            .catch(err => {
+                this.setState({error: err.response.data.message})
+                console.error('error info: ', err.response.data.message);
+            });
         }
     }
 
@@ -95,17 +101,28 @@ class StartLogin extends React.Component {
             const signupMerchant = {
                 merchantid: this.state.merchantid,
                 password: this.state.mrchpswd,
-                repassword: this.state.mrchpswd
+                repassword: this.state.mrchRePswd
             }
             
             axios
             .post('http://localhost:3000/merchant/signup', signupMerchant)
             .then((response) => {
-                this.setState({status: response.statusText})
+                if(response.data.errorMsg){
+                    this.setState({error: response.data.errorMsg})
+                } else {
+                    if (response.status === 200) {
+                        this.setState({loginstatus: true})
+                        this.handleSuccsfulSignUp()
+                    } else {
+                        console.log(response)
+                    }
+                }
             })
-            .catch(err => {
+            .catch((err) => {
+                // const error = err
+                // console.log('error: ', error.includes('404'))
                 this.setState({error: err.response.data.message})
-                console.error('error info: ', err.response.data.message);
+                console.error('error info: ', err);
             });
         }
     }
@@ -212,7 +229,8 @@ class StartLogin extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    merchantLogin: (loginStatus) => dispatch(merchantLogin(loginStatus))
+    merchantLogin: (loginStatus) => dispatch(merchantLogin(loginStatus)),
+    merchantSignUp: (signupStatus) => dispatch(merchantSignUp(signupStatus))
  })
 
  export default connect(undefined, mapDispatchToProps)(StartLogin);
