@@ -3,4 +3,4 @@ node_modules/
 public/dist/
 .env.development
 .env.test
-config/dev.env
+config/
