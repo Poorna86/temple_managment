@@ -2,13 +2,14 @@ export default (state = {}, action) => {
     switch (action.type) {
         case 'MERCHANT_LOGIN': 
             return {
-                merchLogin: action.merchLogin
+                loginStatus: action.loginStatus,
+                profileData: action.profileData
             }
         case 'MERCHANT_SIGNUP': 
             return {
                 merchSignup: action.merchSignup
-        }    
-        case 'MERCHANT_SIGNUP':
+        }
+        case 'LOGOUT': 
             return {}
         default: 
             return state    

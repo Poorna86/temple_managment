@@ -1,14 +1,18 @@
 const jwt = require('jsonwebtoken')
-const Merchant = require('../models/merchant')
+const MerchantSignup = require('../models/merchantsignup');
 
 const merchantAuth = async (req, res, next) => {
     try{
-        const merchantid = await Merchant.findOne({merchantid: req.body.merchantid  }) // grab user from database
-        if (merchantid) {
-			req.merchantid = merchantid
+        const token = req.cookies['auth_token']
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) // ensure token hasn't expired
+        const merchant = await MerchantSignup.findOne({_id: decoded._id, 'tokens.token': token}) // grab user from database
+        if (merchant) {
+			req.merchant = merchant
         }
+        req.token = token //added for logout
         next()
     } catch (e) {
+        console.log(e)
         res.status(401).send(e)
     }
 }

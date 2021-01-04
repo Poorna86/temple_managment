@@ -15,7 +15,10 @@ export class UserForm extends React.Component {
             userSignUp: false,
             showUser: false,
             status: '',
-            error: ''  
+            errorUserID: '',
+            errorPassword: '',
+            errorRePassword: '' ,
+            errorMsg: '' 
         }
     }
 
@@ -49,26 +52,47 @@ export class UserForm extends React.Component {
         this.setState({userSignUp: false})
     }
 
+    handleSuccsfulLogin = () => {
+        const loginStatus = true
+        this.props.userLogin(loginStatus)
+    }
+
+    handleSuccsfulSignUp = () => {
+        const signupStatus = true
+        this.props.userSignUp(signupStatus)
+    }
+
     onUserSubmit = (e) => {
         e.preventDefault()
         console.log('error')
         if (!this.state.userID || !this.state.userPswd) {
-            this.setState(() => ({error: 'please enter Id and password!!' }));
+            this.setState(() => ({errorMsg: 'please enter Id and password!!' }));
         } else {
-            this.setState(() => ({error: ''}))
-            const loginmrchnt = {
+            this.setState(() => ({errorMsg: ''}))
+            const loginUser = {
                 userID: this.state.userID,
-                userPswd: this.state.userPswd
+                password: this.state.userPswd
             }
             
             axios
-            .post('http://localhost:3000/merchant/login', loginmrchnt)
+            .post('http://localhost:3000/user/login', loginUser)
             .then((response) => {
+                this.setState({errorMsg: ''})
                 this.setState({status: response.statusText})
+                handleSuccsfulLogin()
             })
             .catch(err => {
-                this.setState({error: err.response.data.message})
-                console.error('error info: ', err.response.data.message);
+                this.setState({errorMsg: ''})
+                const {userid,password} = err.response.data
+                if (userid){
+                    this.setState({errorMsg: userid})
+                }
+                if (password){
+                    this.setState({errorMsg: password})
+                }
+                if(!userid && !password){
+                    this.setState({errorMsg: 'System error please contact Admin!!'})
+                }
             });
         }
     }
@@ -76,23 +100,47 @@ export class UserForm extends React.Component {
     onUserCreatetSubmit = (e) => {
         e.preventDefault()
         if (!this.state.userID || !this.state.userPswd || !this.state.userRePswd) {
-            this.setState(() => ({error: 'please enter Id and password!!' }));
+            this.setState(() => ({errorMsg: 'please enter Id and password!!' }));
         } else {
-            this.setState(() => ({error: ''}))
-            const signupMerchant = {
+            this.setState(() => ({errorMsg: ''}))
+            const signupUser = {
                 userID: this.state.userID,
                 password: this.state.userPswd,
-                repassword: this.state.userPswd
+                repassword: this.state.userRePswd
             }
             
             axios
-            .post('http://localhost:3000/merchant/signup', signupMerchant)
+            .post('http://localhost:3000/merchant/signup', signupUser)
             .then((response) => {
-                this.setState({status: response.statusText})
+                this.setState({errorUserID: '',
+                                errorPassword: '',
+                                errorRePassword: '',
+                                errorMsg: ''
+                })
+                
+                this.setState({loginstatus: true})
+                handleSuccsfulSignUp()
+                
             })
-            .catch(err => {
-                this.setState({error: err.response.data.message})
-                console.error('error info: ', err.response.data.message);
+            .catch((err) => {
+                this.setState({errorUserID: '',
+                                errorPassword: '',
+                                errorRePassword: '',
+                                errorMsg: ''
+                })
+                const {userid,password,repassword} = err.response.data
+                if (userid){
+                    this.setState({errorUserID: userid})
+                }
+                if (password){
+                    this.setState({errorPassword: password})
+                }
+                if (repassword){
+                    this.setState({errorRePassword: repassword})
+                }
+                if(!userid && !password && !repassword){
+                    this.setState({errorMsg: 'System error please contact Admin!!'})
+                }
             });
         }
     }

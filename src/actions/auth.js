@@ -1,9 +1,14 @@
-export const merchantLogin = (merchLogin) => ({
+export const merchantLogin = (loginStatus, profileData) => ({
     type: 'MERCHANT_LOGIN',
-    merchLogin
+    loginStatus,
+    profileData
 })
 
-export const merchantSignUp = (merchSignup) => {
+export const merchantSignUp = (merchSignup) => ({
     type: 'MERCHANT_SIGNUP',
     merchSignup
-}
+})
+
+export const merchantLogout = () => ({
+    type: 'LOGOUT'
+})

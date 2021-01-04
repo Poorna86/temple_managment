@@ -41,3 +41,14 @@
     border-color: #d3d3d3;
     box-shadow: none;
 }
+
+@media screen and (max-width: 600px) {
+    .navbar{
+        justify-content: space-between;
+    }
+    .adjust_home-header {
+        width: 250px;
+        margin-left: 0;
+        font-size: 1.75rem;
+    }  
+}
